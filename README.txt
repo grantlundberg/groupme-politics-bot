@@ -1,1 +1,1 @@
-url:https://groupme-politics-bot.herokuapp.com/
+url:https://groupme-politics-bot-test.herokuapp.com/

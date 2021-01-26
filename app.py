@@ -12,30 +12,40 @@ def webhook():
     data = request.get_json()
 
     # We don't want to reply to ourselves!
-    if data['name'] != 'PoliticalBot':
+    if data['name'] != 'PoliticalBot' and data['name'] != 'Neffbot':
         
         text_lower = data['text'].lower()
+        text_length = len(text_lower)
 
-        # If someone messaged the politialbot, send the counts
+        # If someone sends more than TEXT_LIMIT characters, call the Neffbot
+        if text_lower.startswith('http://') == False and text_length > TEXT_LIMIT:
+            msg = "@{}, your message exceeded {} characters. ({}). {}".format(
+                data['name'],
+                TEXT_LIMIT,
+                text_length,
+                RESPONSES[random.randrange(0, len(RESPONSES)-1)])
+            send_message('NEFF_BOT_ID', msg)
+
+        # If someone messaged the politicalbot, send the counts
         if text_lower.startswith('@politicalbot'):
-            send_message(get_counts())
+            send_message('POLITICAL_BOT_ID', get_counts())
         # If someone uses a political word, send them a message
         else:
             for word in POLITICAL_WORDS:
                 if word in text_lower:
                     response = RESPONSES[random.randrange(0, len(RESPONSES)-1)]
                     msg = "@{}, your message is political. {}".format(data['name'], response)
-                    send_message(msg)
+                    send_message('POLITICAL_BOT_ID', msg)
                     increment_count(ID_TO_NAME[data['sender_id']])
                     break
     return "ok", 200
 
 
-def send_message(msg):
+def send_message(bot_source:str, msg:str):
     url  = 'https://api.groupme.com/v3/bots/post'
 
     data = {
-            'bot_id' : os.getenv('GROUPME_BOT_ID'),
+            'bot_id' : os.getenv(bot_source),
             'text'   : msg,
             }
     request = Request(url, urlencode(data).encode())
@@ -55,7 +65,7 @@ def increment_count(user:str):
         cursor = conn.cursor()
         cursor.execute("UPDATE counts SET count=count+1 WHERE name=?", (user,))
 
-
+TEXT_LIMIT = 200
 ID_TO_NAME = {'12064987': "Neff",
               '11989321': "Brian",
               '12064988': "Fuller",
@@ -64,11 +74,13 @@ ID_TO_NAME = {'12064987': "Neff",
 RESPONSES = [
         "Did Mexico pay us for that border wall yet?",
         "How's Trumps healthcare plan coming along?",
-        "Fuck you and fuck Susan Collins",
-        "If you're offended about an anti-racism speech, guess what. you're racist",
+        "Fuck you and fuck Susan Collins.",
+        "If you're offended about an anti-racism speech, guess what. you're racist.",
         "Stop it.",
         "Looks like you may be buying the first round of beers.",
-        "Please rethink your life's choices you Ted Cruz-loving motherfucker"
+        "Please rethink your life's choices you Ted Cruz-loving motherfucker.",
+        "Since you know it all, you should know when to shut the fuck up.",
+        "Your ass must be jealous of all that shit you just typed."
         ]
 POLITICAL_WORDS = None
 with open('political_words.txt', 'r') as f:

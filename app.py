@@ -72,6 +72,4 @@ RESPONSES = [
         ]
 POLITICAL_WORDS = None
 with open('political_words.txt', 'r') as f:
-    POLITICAL_WORDS = f.read().split('\n')
-
-
+    POLITICAL_WORDS = f.read().split('\n')[0:-1]

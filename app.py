@@ -18,7 +18,13 @@ def webhook():
         # If someone messaged the politialbot, send the counts
         if text_lower.startswith('@politicalbot'):
             send_message(get_counts())
-    
+        # If someone uses a political word, send them a message
+        else:
+            for word in POLITICAL_WORDS:
+                if word in text_lower:
+                    msg = "@{}, your message is political. {}".format(data['name'], RESPONSES[0])
+                    send_message(msg)
+                    break
     return "ok", 200
 
 

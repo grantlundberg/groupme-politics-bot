@@ -26,7 +26,7 @@ def webhook():
                     response = RESPONSES[random.randrange(0, len(RESPONSES)-1)]
                     msg = "@{}, your message is political. {}".format(data['name'], response)
                     send_message(msg)
-                    increment_count(data['name'])
+                    increment_count(ID_TO_NAME[data['id']])
                     break
     return "ok", 200
 

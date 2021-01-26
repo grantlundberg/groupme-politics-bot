@@ -14,7 +14,7 @@ def webhook():
     # We don't want to reply to ourselves!
     if data['name'] != 'PoliticalBot' and data['name'] != 'Neffbot':
         
-        text_lower = data['text'].lower()
+        text_lower = data['text'].lower().replace('-', '').replace('_', '')
         text_length = len(text_lower)
 
         # If someone sends more than TEXT_LIMIT characters, call the Neffbot

@@ -1,5 +1,6 @@
 import os
 import json
+import random
 import sqlite3
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -22,8 +23,10 @@ def webhook():
         else:
             for word in POLITICAL_WORDS:
                 if word in text_lower:
-                    msg = "@{}, your message is political. {}".format(data['name'], RESPONSES[0])
+                    response = RESPONSES[random.randrange(0, len(RESPONSES)-1)]
+                    msg = "@{}, your message is political. {}".format(data['name'], response)
                     send_message(msg)
+                    increment_count(data['name'])
                     break
     return "ok", 200
 

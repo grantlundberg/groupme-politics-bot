@@ -56,11 +56,11 @@ def increment_count(user:str):
         cursor.execute("UPDATE counts SET count=count+1 WHERE name=?", (user,))
 
 
-ID_TO_NAME = {12064987: "Neff",
-              11989321: "Brian",
-              12064988: "Fuller",
-              12064985: "Danny",
-              12489342: "Grant"}
+ID_TO_NAME = {'12064987': "Neff",
+              '11989321': "Brian",
+              '12064988': "Fuller",
+              '12064985': "Danny",
+              '12489342': "Grant"}
 RESPONSES = [
         "Did Mexico pay us for that border wall yet?",
         "How's Trumps healthcare plan coming along?",

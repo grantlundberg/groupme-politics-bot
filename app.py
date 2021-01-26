@@ -31,7 +31,7 @@ def webhook():
         if text_lower.startswith('@politicalbot'):
             send_message('POLITICAL_BOT_ID', get_counts('political_bot.db'))
         elif text_lower.startswith('@neffbot'):
-            send_message('POLITICAL_BOT_ID', get_counts('neffbot.db'))
+            send_message('NEFF_BOT_ID', get_counts('neffbot.db'))
         # If someone uses a political word, send them a message
         else:
             for word in POLITICAL_WORDS:

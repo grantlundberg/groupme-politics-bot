@@ -25,10 +25,13 @@ def webhook():
                 text_length,
                 RESPONSES[random.randrange(0, len(RESPONSES)-1)])
             send_message('NEFF_BOT_ID', msg)
+            increment_count('neffbot.db', ID_TO_NAME[data['sender_id']])
 
         # If someone messaged the politicalbot, send the counts
         if text_lower.startswith('@politicalbot'):
-            send_message('POLITICAL_BOT_ID', get_counts())
+            send_message('POLITICAL_BOT_ID', get_counts('political_bot.db'))
+        elif text_lower.startswith('@neffbot'):
+            send_message('POLITICAL_BOT_ID', get_counts('neffbot.db'))
         # If someone uses a political word, send them a message
         else:
             for word in POLITICAL_WORDS:
@@ -36,7 +39,7 @@ def webhook():
                     response = RESPONSES[random.randrange(0, len(RESPONSES)-1)]
                     msg = "@{}, your message is political. {}".format(data['name'], response)
                     send_message('POLITICAL_BOT_ID', msg)
-                    increment_count(ID_TO_NAME[data['sender_id']])
+                    increment_count('political_bot.db', ID_TO_NAME[data['sender_id']])
                     break
     return "ok", 200
 
@@ -52,16 +55,16 @@ def send_message(bot_source:str, msg:str):
     json = urlopen(request).read().decode()
 
 
-def get_counts():
+def get_counts(database_name:str):
     counts_msg = ""
-    with sqlite3.connect('politicalbot.db') as conn:
+    with sqlite3.connect(database_name) as conn:
         cursor = conn.cursor()
         for row in cursor.execute("SELECT name,count FROM counts").fetchall():
             counts_msg += "{}: {}\n".format(row[0], row[1])
     return counts_msg
 
-def increment_count(user:str):
-    with sqlite3.connect('politicalbot.db') as conn:
+def increment_count(database_name:str, user:str):
+    with sqlite3.connect(database_name) as conn:
         cursor = conn.cursor()
         cursor.execute("UPDATE counts SET count=count+1 WHERE name=?", (user,))
 

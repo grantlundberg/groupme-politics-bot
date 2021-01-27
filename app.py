@@ -29,7 +29,7 @@ def webhook():
 
         # If someone messaged the politicalbot, send the counts
         if text_lower.startswith('@politicalbot'):
-            send_message('POLITICAL_BOT_ID', get_counts('political_bot.db'))
+            send_message('POLITICAL_BOT_ID', get_counts('politicalbot.db'))
         elif text_lower.startswith('@neffbot'):
             send_message('NEFF_BOT_ID', get_counts('neffbot.db'))
         # If someone uses a political word, send them a message
@@ -39,7 +39,7 @@ def webhook():
                     response = RESPONSES[random.randrange(0, len(RESPONSES)-1)]
                     msg = "@{}, your message is political. {}".format(data['name'], response)
                     send_message('POLITICAL_BOT_ID', msg)
-                    increment_count('political_bot.db', ID_TO_NAME[data['sender_id']])
+                    increment_count('politicalbot.db', ID_TO_NAME[data['sender_id']])
                     break
     return "ok", 200
 

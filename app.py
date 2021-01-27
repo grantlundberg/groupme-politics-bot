@@ -73,7 +73,8 @@ ID_TO_NAME = {'12064987': "Neff",
               '11989321': "Brian",
               '12064988': "Fuller",
               '12064985': "Danny",
-              '12489342': "Grant"}
+              '12489342': "Grant",
+              '38995562': "Kevin"}
 RESPONSES = [
         "Did Mexico pay us for that border wall yet?",
         "How's Trumps healthcare plan coming along?",

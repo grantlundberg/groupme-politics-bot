@@ -87,7 +87,7 @@ def scan_images(attachments):
                 image = Image.open(requests.get(attachment['url'], stream=True).raw)
                 text += pytesseract.image_to_string(image)
     except Exception as e:
-        print("ERROR: caught exception in scan_images(): "+e)
+        print("ERROR: caught exception in scan_images(): "+str(e))
     return text
 
 

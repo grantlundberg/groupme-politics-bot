@@ -5,6 +5,9 @@ import sqlite3
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from flask import Flask, request
+from PIL import Image
+import pytesseract
+import requests
 
 app = Flask(__name__)
 @app.route('/', methods=['POST'])
@@ -19,6 +22,10 @@ def webhook():
 
         # Log some details
         print("{sender_id},{name},{text},{attachments}".format(**data))
+
+        # If the data has image attachments, grab them and run tesseract on them
+        if len(data['attachments']) > 0:
+            text_lower += scan_images(data['attachments'])
 
         # If someone sends more than TEXT_LIMIT characters, call the Neffbot
         if text_lower.startswith('http://') == False and text_length > TEXT_LIMIT:
@@ -44,12 +51,7 @@ def webhook():
                     send_message('POLITICAL_BOT_ID', msg)
                     increment_count('politicalbot.db', ID_TO_NAME[data['sender_id']])
                     break
-        
-        # TODO:
-        # If the data has image attachments, grab them and run tesseract on them
-        #
-        #
-        
+
     return "ok", 200
 
 
@@ -76,6 +78,18 @@ def increment_count(database_name:str, user:str):
     with sqlite3.connect(database_name) as conn:
         cursor = conn.cursor()
         cursor.execute("UPDATE counts SET count=count+1 WHERE name=?", (user,))
+
+def scan_images(attachments):
+    text = ''
+    try:
+        for attachment in attachments:
+            if attachment['type'] == 'image':
+                image = Image.open(requests.get(attachment['url'], stream=True).raw)
+                text += pytesseract.image_to_string(image)
+    except Exception as e:
+        print("ERROR: caught exception in scan_images(): "+e)
+    return text
+
 
 TEXT_LIMIT = 200
 ID_TO_NAME = {'12064987': "Neff",

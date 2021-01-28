@@ -17,6 +17,9 @@ def webhook():
         text_lower = data['text'].lower().replace('-', '').replace('_', '')
         text_length = len(text_lower)
 
+        # Log some details
+        print("{sender_id},{name},{text},{attachments}".format(**data))
+
         # If someone sends more than TEXT_LIMIT characters, call the Neffbot
         if text_lower.startswith('http://') == False and text_length > TEXT_LIMIT:
             msg = "@{}, your message exceeded {} characters. ({}). {}".format(

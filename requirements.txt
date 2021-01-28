@@ -1,2 +1,3 @@
 Flask==0.12
 gunicorn==19.6.0
+-e hg+https://bitbucket.org/etienned/pil-2009-raclette/#egg=PIL

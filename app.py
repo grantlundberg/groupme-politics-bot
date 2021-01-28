@@ -44,6 +44,12 @@ def webhook():
                     send_message('POLITICAL_BOT_ID', msg)
                     increment_count('politicalbot.db', ID_TO_NAME[data['sender_id']])
                     break
+        
+        # TODO:
+        # If the data has image attachments, grab them and run tesseract on them
+        #
+        #
+        
     return "ok", 200
 
 

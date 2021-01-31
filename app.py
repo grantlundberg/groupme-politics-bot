@@ -25,6 +25,7 @@ def webhook():
 
         # If the data has image attachments, grab them and run tesseract on them
         if len(data['attachments']) > 0:
+            print("Found {} attachments".format(len(data['attachments'])))
             text_lower += scan_images(data['attachments'])
 
         # If someone sends more than TEXT_LIMIT characters, call the Neffbot
@@ -88,6 +89,7 @@ def scan_images(attachments):
                 text += pytesseract.image_to_string(image)
     except Exception as e:
         print("ERROR: caught exception in scan_images(): "+str(e))
+    print("scan_images text: {}".format(text))
     return text
 
 

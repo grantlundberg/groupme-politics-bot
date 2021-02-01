@@ -9,6 +9,7 @@ import requests
 
 
 def send_message(bot_source:str, msg:str):
+    print("send_message()")
     url  = 'https://api.groupme.com/v3/bots/post'
     data = {'bot_id' : os.getenv(bot_source),
             'text'   : msg}
@@ -17,6 +18,7 @@ def send_message(bot_source:str, msg:str):
 
 
 def get_counts(database_name:str):
+    print("get_counts({}".format(database_name))
     counts_msg = ""
     with sqlite3.connect(database_name) as conn:
         cursor = conn.cursor()
@@ -26,6 +28,7 @@ def get_counts(database_name:str):
 
 
 def increment_count(database_name:str, user:str):
+    print("increment_count({}, {}".format(database_name, user))
     with sqlite3.connect(database_name) as conn:
         cursor = conn.cursor()
         cursor.execute("UPDATE counts SET count=count+1 WHERE name=?", (user,))
@@ -45,6 +48,7 @@ def scan_images(attachments, name, sender_id):
 
 
 def check_for_political_words(text:str, name:str, sender_id:str):
+    print("check_for_political_words()")
     for word in POLITICAL_WORDS:
         if word in text:
             response = RESPONSES[random.randrange(0, len(RESPONSES)-1)]

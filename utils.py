@@ -23,23 +23,13 @@ def send_message(bot_source:str, msg:str):
     urlopen(request).read().decode()
 
 
-def get_neff_counts():
-    print("get_neff_counts()")
+def get_counts(table):
+    print("get_counts({})".format(table))
     counts_msg = ""
     DATABASE_URL = os.environ['DATABASE_URL']
     with psycopg2.connect(DATABASE_URL, sslmode='require') as conn:
         cursor = conn.cursor()
-        for row in cursor.execute('SELECT name,count FROM neffbot').fetchall():
-            counts_msg += "{}: {}\n".format(row[0], row[1])
-    return counts_msg
-
-def get_political_counts():
-    print("get_political_counts()")
-    counts_msg = ""
-    DATABASE_URL = os.environ['DATABASE_URL']
-    with psycopg2.connect(DATABASE_URL, sslmode='require') as conn:
-        cursor = conn.cursor()
-        for row in cursor.execute('SELECT name,count FROM politicalbot').fetchall():
+        for row in cursor.execute('SELECT name,count FROM {0}'.format(table)).fetchall():
             counts_msg += "{}: {}\n".format(row[0], row[1])
     return counts_msg
 

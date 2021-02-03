@@ -28,17 +28,17 @@ def get_counts(table:str):
     DATABASE_URL = os.environ['DATABASE_URL']
     with psycopg2.connect(DATABASE_URL, sslmode='require') as conn:
         cursor = conn.cursor()
-        for row in cursor.execute('SELECT name,count FROM %s' % table).fetchall():
+        for row in cursor.execute('SELECT name,count FROM %s', [table]).fetchall():
             counts_msg += "{}: {}\n".format(row[0], row[1])
     return counts_msg
 
 
 def increment_count(table:str, user:str):
-    print("increment_count({}, {}".format(table, user))
+    print("increment_count({}, {})".format(table, user))
     DATABASE_URL = os.environ['DATABASE_URL']
     with psycopg2.connect(DATABASE_URL, sslmode='require') as conn:
         cursor = conn.cursor()
-        cursor.execute('UPDATE %s SET count=count+1 WHERE name=%s', (table,user))
+        cursor.execute('UPDATE %s SET count=count+1 WHERE name=%s', [table,user])
 
 
 def scan_images(attachments, name, sender_id):

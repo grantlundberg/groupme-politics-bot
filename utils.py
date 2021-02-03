@@ -7,6 +7,7 @@ import pytesseract
 import random
 import requests
 import psycopg2
+from psycopg2 import sql
 
 
 def send_neff_message(msg:str):
@@ -28,7 +29,7 @@ def get_counts(table:str):
     DATABASE_URL = os.environ['DATABASE_URL']
     with psycopg2.connect(DATABASE_URL, sslmode='require') as conn:
         cursor = conn.cursor()
-        for row in cursor.execute('SELECT name,count FROM %s', [table]).fetchall():
+        for row in cursor.execute('SELECT name,count FROM {}'.format(sql.Identifier(table))).fetchall():
             counts_msg += "{}: {}\n".format(row[0], row[1])
     return counts_msg
 

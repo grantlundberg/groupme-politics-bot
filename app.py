@@ -22,7 +22,6 @@ def webhook():
             print("Found {} attachments. Spawning a thread to handle it".format(len(data['attachments'])))
             th = threading.Thread(target=utils.scan_images, args=(data['attachments'], data['name'], data['sender_id']))
             th.start()
-
         # If someone sends more than TEXT_LIMIT characters, call the Neffbot
         if text_lower.startswith('http://') == False and text_length > utils.TEXT_LIMIT:
             msg = "@{}, your message exceeded {} characters. ({}). {}".format(
@@ -30,14 +29,14 @@ def webhook():
                 utils.TEXT_LIMIT,
                 text_length,
                 utils.RESPONSES[random.randrange(0, len(utils.RESPONSES)-1)])
-            utils.send_message('NEFF_BOT_ID', msg)
-            utils.increment_count('neffbot.db', utils.ID_TO_NAME[data['sender_id']])
+            utils.send_neff_message(msg)
+            utils.increment_count('neffbot', utils.ID_TO_NAME[data['sender_id']])
 
         # If someone messaged the politicalbot, send the counts
         if text_lower.startswith('@politicalbot'):
-            utils.send_message('POLITICAL_BOT_ID', utils.get_counts('politicalbot.db'))
+            utils.send_political_message(utils.get_counts('politicalbot'))
         elif text_lower.startswith('@neffbot'):
-            utils.send_message('NEFF_BOT_ID', utils.get_counts('neffbot.db'))
+            utils.send_neff_message(utils.get_counts('neffbot'))
         # If someone uses a political word, send them a message
         else:
             utils.check_for_political_words(text_lower, data['name'], data['sender_id'])

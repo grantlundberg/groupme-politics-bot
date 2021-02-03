@@ -6,8 +6,13 @@ from PIL import Image
 import pytesseract
 import random
 import requests
+import psycopg2
 
 
+def send_neff_message(msg:str):
+    return send_message('NEFF_BOT_ID', msg)
+def send_political_message(msg:str):
+    return send_message('POLITICAL_BOT_ID', msg)
 def send_message(bot_source:str, msg:str):
     print("send_message()")
     url  = 'https://api.groupme.com/v3/bots/post'
@@ -17,19 +22,21 @@ def send_message(bot_source:str, msg:str):
     urlopen(request).read().decode()
 
 
-def get_counts(database_name:str):
-    print("get_counts({}".format(database_name))
+def get_counts(table:str):
+    print("get_counts({}".format(table))
     counts_msg = ""
-    with sqlite3.connect(database_name) as conn:
+    DATABASE_URL = os.environ['DATABASE_URL']
+    with psycopg2.connect(DATABASE_URL, sslmode='require') as conn:
         cursor = conn.cursor()
         for row in cursor.execute("SELECT name,count FROM counts").fetchall():
             counts_msg += "{}: {}\n".format(row[0], row[1])
     return counts_msg
 
 
-def increment_count(database_name:str, user:str):
-    print("increment_count({}, {}".format(database_name, user))
-    with sqlite3.connect(database_name) as conn:
+def increment_count(table:str, user:str):
+    print("increment_count({}, {}".format(table, user))
+    DATABASE_URL = os.environ['DATABASE_URL']
+    with psycopg2.connect(DATABASE_URL, sslmode='require') as conn:
         cursor = conn.cursor()
         cursor.execute("UPDATE counts SET count=count+1 WHERE name=?", (user,))
 
@@ -53,8 +60,8 @@ def check_for_political_words(text:str, name:str, sender_id:str):
         if word in text:
             response = RESPONSES[random.randrange(0, len(RESPONSES)-1)]
             msg = "@{}, your message is political. {}".format(name, response)
-            send_message('POLITICAL_BOT_ID', msg)
-            increment_count('politicalbot.db', ID_TO_NAME[sender_id])
+            send_political_message(msg)
+            increment_count('politicalbot', ID_TO_NAME[sender_id])
             break
 
 

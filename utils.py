@@ -28,7 +28,7 @@ def get_counts(table:str):
     DATABASE_URL = os.environ['DATABASE_URL']
     with psycopg2.connect(DATABASE_URL, sslmode='require') as conn:
         cursor = conn.cursor()
-        for row in cursor.execute("SELECT name,count FROM counts").fetchall():
+        for row in cursor.execute("SELECT name,count FROM ?", (table,)).fetchall():
             counts_msg += "{}: {}\n".format(row[0], row[1])
     return counts_msg
 
@@ -38,7 +38,7 @@ def increment_count(table:str, user:str):
     DATABASE_URL = os.environ['DATABASE_URL']
     with psycopg2.connect(DATABASE_URL, sslmode='require') as conn:
         cursor = conn.cursor()
-        cursor.execute("UPDATE counts SET count=count+1 WHERE name=?", (user,))
+        cursor.execute("UPDATE ? SET count=count+1 WHERE name=?", (table,user))
 
 
 def scan_images(attachments, name, sender_id):

@@ -29,7 +29,8 @@ def get_counts(table):
     DATABASE_URL = os.environ['DATABASE_URL']
     with psycopg2.connect(DATABASE_URL, sslmode='require') as conn:
         cursor = conn.cursor()
-        for row in cursor.execute('SELECT name,count FROM {0}'.format(table)).fetchall():
+        cursor.execute('SELECT name,count FROM {0}'.format(table))
+        for row in cursor.fetchall():
             counts_msg += "{}: {}\n".format(row[0], row[1])
     return counts_msg
 

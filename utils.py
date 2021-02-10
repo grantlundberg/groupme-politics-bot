@@ -127,6 +127,7 @@ POLITICAL_WORDS = [
     "republican",
     "republicans",
     "senate",
+    "stacy plaskett",
     "trump",
     "woke"
 ]

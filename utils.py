@@ -52,7 +52,7 @@ def scan_images(attachments, name, sender_id):
     except Exception as e:
         print("ERROR: caught exception in scan_images(): "+str(e))
     print("scan_images text: {}".format(text))
-    check_for_political_words(text, name, sender_id)
+    check_for_political_words(text.lower(), name, sender_id)
 
 
 def check_for_political_words(text:str, name:str, sender_id:str):

@@ -9,15 +9,22 @@ import requests
 import psycopg2
 
 
-def send_neff_message(msg:str):
-    return send_message('NEFF_BOT_ID', msg)
-def send_political_message(msg:str):
-    return send_message('POLITICAL_BOT_ID', msg)
-def send_message(bot_source:str, msg:str):
+#attachments = [{'loci': [[0, 7]], 'type': 'mentions', 'user_ids': ['11989321']}]
+
+def send_neff_message(msg:str, recipient_name:str, recipient_id:str):
+    return send_message('NEFF_BOT_ID', msg, recipient_name, recipient_id)
+def send_political_message(msg:str, recipient_name:str, recipient_id:str):
+    return send_message('POLITICAL_BOT_ID', msg, recipient_name, recipient_id)
+
+def send_message(bot_source:str, msg:str, recipient_name:str, recipient_id:str):
     print("send_message()")
+    attachments = []
+    if recipient_name and recipient_id:
+        attachments = [{'loci': [[0,len(recipient_name)]], 'type': 'mentions', 'user_ids': [recipient_id]}]
     url  = 'https://api.groupme.com/v3/bots/post'
     data = {'bot_id' : os.getenv(bot_source),
-            'text'   : msg}
+            'text'   : msg,
+            'attachments': attachments}
     request = Request(url, urlencode(data).encode())
     urlopen(request).read().decode()
 
@@ -61,7 +68,7 @@ def check_for_political_words(text:str, name:str, sender_id:str):
         if word in text:
             response = RESPONSES[random.randrange(0, len(RESPONSES)-1)]
             msg = "@{}, your message is political. {}".format(name, response)
-            send_political_message(msg)
+            send_political_message(msg, name, sender_id)
             increment_count('politicalbot', ID_TO_NAME[sender_id])
             break
 

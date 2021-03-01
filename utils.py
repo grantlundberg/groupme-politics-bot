@@ -24,6 +24,8 @@ def send_message(bot_source:str, msg:str, recipient_name:str, recipient_id:str):
     data = {'bot_id' : os.getenv(bot_source),
             'text'   : msg,
             'attachments': attachments}
+    print("data: ", end='')
+    print(data)
     request = Request(url, urlencode(data).encode())
     urlopen(request).read().decode()
 

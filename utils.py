@@ -17,13 +17,13 @@ def send_political_message(msg:str, recipient_name:str, recipient_id:str):
 
 def send_message(bot_source:str, msg:str, recipient_name:str, recipient_id:str):
     print("send_message()")
-    attachments = []
-    if recipient_name and recipient_id:
-        attachments = [{'loci': [[0,len(recipient_name)+1]], 'type': 'mentions', 'user_ids': [recipient_id]}]
+    #attachments = []
+    #if recipient_name and recipient_id:
+    #    attachments = [{'loci': [[0,len(recipient_name)+1]], 'type': 'mentions', 'user_ids': [recipient_id]}]
     url  = 'https://api.groupme.com/v3/bots/post'
     data = {'bot_id' : os.getenv(bot_source),
-            'text'   : msg,
-            'attachments': attachments}
+            'text'   : msg}
+    #        'attachments': attachments}
     print("data: ", end='')
     print(data)
     request = Request(url, urlencode(data).encode())
